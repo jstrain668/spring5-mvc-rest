@@ -1,7 +1,9 @@
 package guru.springfamework.bootstrap;
 
 import guru.springfamework.domain.Category;
+import guru.springfamework.domain.Customer;
 import guru.springfamework.repositories.CategoryRepository;
+import guru.springfamework.repositories.CustomerRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -9,9 +11,12 @@ import org.springframework.stereotype.Component;
 public class Boostrap implements CommandLineRunner {
 
     CategoryRepository categoryRepository;
+    CustomerRepository customerRepository;
 
-    public Boostrap(CategoryRepository categoryRepository) {
+    public Boostrap(CategoryRepository categoryRepository, CustomerRepository customerRepository) {
+
         this.categoryRepository = categoryRepository;
+        this.customerRepository = customerRepository;
     }
 
     @Override
@@ -37,8 +42,22 @@ public class Boostrap implements CommandLineRunner {
         categoryRepository.save(exotic);
         categoryRepository.save(nuts);
 
+        //given
+        Customer customer1 = new Customer();
+        customer1.setId(1l);
+        customer1.setFirstName("Michale");
+        customer1.setLastName("Weston");
+        customerRepository.save(customer1);
 
-        System.out.println("Data Loaded = " + categoryRepository.count() );
+        Customer customer2 = new Customer();
+        customer2.setId(2l);
+        customer2.setFirstName("Sam");
+        customer2.setLastName("Axe");
+
+        customerRepository.save(customer2);
+
+        System.out.println("Data Loaded for Categories = " + categoryRepository.count() );
+        System.out.println("Data Loaded for Customers = " + customerRepository.count() );
 
     }
 }
