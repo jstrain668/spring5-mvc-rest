@@ -8,12 +8,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Boostrap implements CommandLineRunner {
+public class Bootstrap implements CommandLineRunner {
 
     CategoryRepository categoryRepository;
     CustomerRepository customerRepository;
 
-    public Boostrap(CategoryRepository categoryRepository, CustomerRepository customerRepository) {
+    public Bootstrap(CategoryRepository categoryRepository, CustomerRepository customerRepository) {
 
         this.categoryRepository = categoryRepository;
         this.customerRepository = customerRepository;
