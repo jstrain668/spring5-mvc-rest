@@ -1,5 +1,6 @@
 package guru.springfamework.controllers.v1;
 
+import guru.springfamework.api.v1.model.CustomerDTO;
 import guru.springfamework.api.v1.model.VendorDTO;
 import guru.springfamework.api.v1.model.VendorListDTO;
 import guru.springfamework.services.VendorService;
@@ -32,4 +33,9 @@ public class VendorController {
         return vendorService.getVendorById(id);
     }
 
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public VendorDTO createNewVendor(@RequestBody VendorDTO vendorDTO){
+        return vendorService.createNewVendor(vendorDTO);
+    }
 }

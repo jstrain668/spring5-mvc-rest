@@ -1,7 +1,12 @@
 package guru.springfamework.services;
 
 import guru.springfamework.api.v1.mapper.VendorMapper;
+import guru.springfamework.api.v1.model.CustomerDTO;
 import guru.springfamework.api.v1.model.VendorDTO;
+import guru.springfamework.controllers.v1.CustomerController;
+import guru.springfamework.controllers.v1.VendorController;
+import guru.springfamework.domain.Customer;
+import guru.springfamework.domain.Vendor;
 import guru.springfamework.repositories.VendorRepository;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +30,7 @@ public class VendorServiceImpl implements VendorService {
                 .stream()
                 .map(vendor -> {
                     VendorDTO vendorDTO = vendorMapper.vendorToVendorDto(vendor);
-                    vendorDTO.setVendorUrl("/api/v1/shop/vendors" + "/" + vendor.getId());
+                    vendorDTO.setVendorUrl(getVendorUrl(vendor.getId()));
                     return vendorDTO;
                 })
                 .collect(Collectors.toList());
@@ -38,9 +43,30 @@ public class VendorServiceImpl implements VendorService {
                 .map(vendorMapper::vendorToVendorDto)
                 .map(vendorDTO -> {
                     //set API URL
-                    vendorDTO.setVendorUrl("/api/v1/shop/vendors" + "/" + id);
+                    vendorDTO.setVendorUrl(getVendorUrl(id));
                     return vendorDTO;
                 })
                 .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    @Override
+    public VendorDTO createNewVendor(VendorDTO vendorDTO) {
+
+        return saveAndReturnDTO(vendorMapper.vendorDtoToVendor(vendorDTO));
+    }
+
+    private VendorDTO saveAndReturnDTO(Vendor vendor){
+
+        Vendor savedVendor = vendorRepository.save(vendor);
+
+        VendorDTO returnDTO = vendorMapper.vendorToVendorDto(savedVendor);
+        returnDTO.setVendorUrl(getVendorUrl(savedVendor.getId()));
+
+        return returnDTO;
+    }
+
+    private String getVendorUrl(Long id) {
+
+        return VendorController.BASE_URL + "/" + id;
     }
 }
