@@ -78,6 +78,7 @@ public class CustomerServiceImplTest {
         //given
         CustomerDTO customerDTO = new CustomerDTO();
         customerDTO.setFirstName("Jim");
+        customerDTO.setLastName("Baxter");
 
         Customer savedCustomer = new Customer();
         savedCustomer.setFirstName(customerDTO.getFirstName());
