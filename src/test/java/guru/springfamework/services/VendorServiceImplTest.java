@@ -19,7 +19,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class VendorServiceImplTest {
 
@@ -114,5 +114,15 @@ public class VendorServiceImplTest {
         //then
         assertEquals(vendorDTO.getName(), savedDto.getName());
         assertEquals(VendorController.BASE_URL + "/1", savedDto.getVendorUrl());
+    }
+
+    @Test
+    public void deleteVendorById() throws Exception {
+
+        Long id = 1L;
+
+        vendorService.deleteVendorById(id);
+
+        verify(vendorRepository, times(1)).deleteById(anyLong());
     }
 }

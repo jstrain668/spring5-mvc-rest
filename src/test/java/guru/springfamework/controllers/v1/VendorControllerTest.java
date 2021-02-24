@@ -3,6 +3,7 @@ package guru.springfamework.controllers.v1;
 import guru.springfamework.api.v1.model.CustomerDTO;
 import guru.springfamework.api.v1.model.VendorDTO;
 import guru.springfamework.controllers.RestResponseEntityExceptionHandler;
+import guru.springfamework.services.ResourceNotFoundException;
 import guru.springfamework.services.VendorService;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -125,5 +127,46 @@ public class VendorControllerTest extends AbstractRestControllerTest {
                 .andExpect(jsonPath("$.name", equalTo(VENDOR_NAME)))
                 .andExpect(jsonPath("$.vendor_url", equalTo(VendorController.BASE_URL + "/1")));
 
+    }
+
+    @Test
+    public void testPatchVendor() throws Exception {
+
+        //given
+        VendorDTO vendor1 = new VendorDTO();
+        vendor1.setName(VENDOR_NAME);
+
+        VendorDTO returnDTO = new VendorDTO();
+        returnDTO.setName(vendor1.getName());
+        returnDTO.setVendorUrl(VendorController.BASE_URL + "/1");
+
+        when(vendorService.patchVendor(anyLong(), any(VendorDTO.class))).thenReturn(returnDTO);
+
+        mockMvc.perform(patch(VendorController.BASE_URL + "/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(vendor1)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo(VENDOR_NAME)))
+                .andExpect(jsonPath("$.vendor_url", equalTo(VendorController.BASE_URL + "/1")));
+    }
+
+    @Test
+    public void testDeleteVendor() throws Exception {
+
+        mockMvc.perform(delete(VendorController.BASE_URL + "/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(vendorService).deleteVendorById(anyLong());
+    }
+
+    @Test
+    public void testNotFoundException() throws Exception {
+
+        when(vendorService.getVendorById(anyLong())).thenThrow(ResourceNotFoundException.class);
+
+        mockMvc.perform(get(VendorController.BASE_URL + "/222")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }

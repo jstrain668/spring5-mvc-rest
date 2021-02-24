@@ -45,4 +45,18 @@ public class VendorController {
                                       @RequestBody VendorDTO vendorDTO) {
         return vendorService.saveVendorByDTO(id, vendorDTO);
     }
+
+    @PatchMapping({"/{id}"})
+    @ResponseStatus(HttpStatus.OK)
+    public VendorDTO patchVendor(@PathVariable Long id,
+                                     @RequestBody VendorDTO vendorDTO){
+        return vendorService.patchVendor(id, vendorDTO);
+    }
+
+    @DeleteMapping({"/{id}"})
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteCustomer(@PathVariable Long id){
+
+        vendorService.deleteVendorById(id);
+    }
 }
