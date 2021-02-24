@@ -1,8 +1,11 @@
 package guru.springfamework.services;
 
 import guru.springfamework.api.v1.mapper.VendorMapper;
+import guru.springfamework.api.v1.model.CustomerDTO;
 import guru.springfamework.api.v1.model.VendorDTO;
+import guru.springfamework.controllers.v1.CustomerController;
 import guru.springfamework.controllers.v1.VendorController;
+import guru.springfamework.domain.Customer;
 import guru.springfamework.domain.Vendor;
 import guru.springfamework.repositories.VendorRepository;
 import org.junit.Before;
@@ -86,6 +89,27 @@ public class VendorServiceImplTest {
 
         //when
         VendorDTO savedDto = vendorService.createNewVendor(vendorDTO);
+
+        //then
+        assertEquals(vendorDTO.getName(), savedDto.getName());
+        assertEquals(VendorController.BASE_URL + "/1", savedDto.getVendorUrl());
+    }
+
+    @Test
+    public void saveVendorByDTO() throws Exception {
+
+        //given
+        VendorDTO vendorDTO = new VendorDTO();
+        vendorDTO.setName("Acme");
+
+        Vendor savedVendor = new Vendor();
+        savedVendor.setName(vendorDTO.getName());
+        savedVendor.setId(1l);
+
+        when(vendorRepository.save(any(Vendor.class))).thenReturn(savedVendor);
+
+        //when
+        VendorDTO savedDto = vendorService.saveVendorByDTO(1l,vendorDTO);
 
         //then
         assertEquals(vendorDTO.getName(), savedDto.getName());

@@ -18,10 +18,10 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -103,5 +103,27 @@ public class VendorControllerTest extends AbstractRestControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", equalTo(VENDOR_NAME)))
                 .andExpect(jsonPath("$.vendor_url", equalTo(VendorController.BASE_URL + "/1")));
+    }
+
+    @Test
+    public void updateVendor() throws Exception {
+        //Given
+        VendorDTO vendor1 = new VendorDTO();
+        vendor1.setName(VENDOR_NAME);
+
+        VendorDTO returnDTO = new VendorDTO();
+        returnDTO.setName(vendor1.getName());
+        returnDTO.setVendorUrl(VendorController.BASE_URL + "/1");
+
+        when(vendorService.saveVendorByDTO(anyLong(),any(VendorDTO.class))).thenReturn(returnDTO);
+
+        //when/then
+        mockMvc.perform(put(VendorController.BASE_URL + "/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(vendor1)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo(VENDOR_NAME)))
+                .andExpect(jsonPath("$.vendor_url", equalTo(VendorController.BASE_URL + "/1")));
+
     }
 }
